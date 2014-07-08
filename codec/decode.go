@@ -304,12 +304,6 @@ func (f *decFnInfo) kInterface(rv reflect.Value) {
 	if vt == valueTypeNil {
 		return
 	}
-	// Cannot decode into nil interface with methods (e.g. error, io.Reader, etc)
-	// if non-nil value in stream.
-	if num := f.ti.rt.NumMethod(); num > 0 {
-		decErr("decodeValue: Cannot decode non-nil codec value into nil %v (%v methods)",
-			f.ti.rt, num)
-	}
 	var rvn reflect.Value
 	var useRvn bool
 	switch vt {
@@ -335,7 +329,7 @@ func (f *decFnInfo) kInterface(rv reflect.Value) {
 		rvn, bfn = f.d.h.getDecodeExtForTag(re.Tag)
 		if bfn == nil {
 			rvn = reflect.ValueOf(*re)
-		} else if fnerr := bfn(rvn, re.Data); fnerr != nil {
+		} else if fnerr := bfn(rvn.Elem(), re.Data); fnerr != nil {
 			panic(fnerr)
 		}
 		rv.Set(rvn)

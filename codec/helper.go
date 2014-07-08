@@ -272,7 +272,7 @@ func (o extHandle) getDecodeExtForTag(tag byte) (
 	rv reflect.Value, fn func(reflect.Value, []byte) error) {
 	if x := o.getExtForTag(tag); x != nil {
 		// ext is only registered for base
-		rv = reflect.New(x.rt).Elem()
+		rv = reflect.New(x.rt)
 		fn = x.decFn
 	}
 	return
